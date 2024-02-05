@@ -1,9 +1,9 @@
 const express = require('express')
 const app = express();
 const db = require('./db')
-
+require('dotenv').config()
 const bodyParser = require('body-parser')
-const port = 3000;
+const port = process.env.PORT || 4444;
 const menuRoutes = require('./routes/menuRouter')
 const personRoutes = require('./routes/personRouter')
 

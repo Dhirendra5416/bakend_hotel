@@ -10,7 +10,7 @@ router.post('/add-menu-items',async(req,res)=>{
         const newMenu = new MenuItem(data);
         //Save new  Person data
         const response = await newMenu.save()
-        console.log(response,"menu")
+       
         res.status(200).json(response)
     }catch(error){
         console.error(error)
