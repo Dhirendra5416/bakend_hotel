@@ -1,5 +1,7 @@
 const express = require('express')
 const router = express.Router();
+const excel = require('exceljs');
+const fs = require('fs');
 const Person = require('../models/person')
 
 router.post('/add-person',async(req,res)=>{
@@ -26,7 +28,7 @@ router.get('/',async(req,res)=>{
     }
 })
 
-router.get('/:workType',async(req,res)=>{
+router.get('/work/:workType',async(req,res)=>{
     try{
         const workType = req.params.workType;
         if(workType =='chef' || workType == 'manager' || workType == 'waiter'){
@@ -41,6 +43,46 @@ router.get('/:workType',async(req,res)=>{
     }
    
 })
+
+
+// Define your API route to retrieve data from MongoDB and generate Excel file
+router.get('/download-excel', async (req, res) => {
+    try {
+      // Retrieve data from MongoDB (replace {} with your query)
+      const data = await Person.find({});
+  
+      // Create a new Excel workbook and worksheet
+      const workbook = new excel.Workbook();
+      const worksheet = workbook.addWorksheet('Sheet 1');
+  
+      // Add headers to the worksheet
+      const headers = Object.keys(data[0]._doc);
+      worksheet.addRow(headers);
+  
+      // Add data to the worksheet
+      data.forEach(item => {
+        const row = Object.values(item._doc);
+        worksheet.addRow(row);
+      });
+  
+      // Save the workbook to a file
+      const excelFilePath = 'output.xlsx';
+      await workbook.xlsx.writeFile(excelFilePath);
+  
+      // Send the file as a response
+      res.download(excelFilePath, 'output.xlsx', (err) => {
+        if (err) {
+          console.error(err);
+          res.status(500).send('Internal Server Error');
+        }
+        // Delete the file after sending
+        fs.unlinkSync(excelFilePath);
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Internal Server Error');
+    }
+  });
 
 
 module.exports = router;
