@@ -19,6 +19,10 @@ const personSchema = new mongoose.Schema({
         required:true,
         unique:true
     },
+    password:{
+        type:String,
+        required:true,
+    },
     mobile:{
         type:String
     },
@@ -28,7 +32,10 @@ const personSchema = new mongoose.Schema({
     salary:{
         type:Number,
         required:true
-    }
+    },
+    resetToken: String,
+    resetTokenExpiration: Date,
+     
 });
 
 // Create Person model
